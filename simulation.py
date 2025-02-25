@@ -6,50 +6,60 @@ M_PI0 = 134.9766
 
 @jit(nopython=True)
 def detector_energy_smearing(true_energy, a_params, a_prime_params, b0, resolution_params, adc_channels):
-    """Simula la dispersione in energia e la ripartizione tra assorbitore e convertitore."""
-    alpha1, alpha2 = a_params
-    beta1, beta2 = a_prime_params
-    a_E = alpha1 * true_energy + alpha2
-    a_prime_E = beta1 * true_energy + beta2
+    measured_energy_preADC = some_function_to_calculate_energy(true_energy, a_params, a_prime_params, b0, resolution_params)
 
-    k, c = resolution_params
-    sigma_E = k * np.sqrt(true_energy) + abs(c)
-
-    measured_energy_preADC = np.random.normal(true_energy, sigma_E)
     if measured_energy_preADC <= 0:
-        return None, None, None, None, None, None, None, None
+        # Ensure that all branches return the same number of elements with the same types
+        return (np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan)
 
-    converter_fraction_mean = 0.2
-    converter_fraction_sigma = 0.05
-
-    converter_fraction = np.random.normal(converter_fraction_mean, converter_fraction_sigma)
-    converter_fraction = max(0.0, min(converter_fraction, 1.0))
-
-    energy_converter = measured_energy_preADC * converter_fraction
-    energy_absorber = measured_energy_preADC * (1 - converter_fraction)
-
-    adc_A_channels, adc_C_channels = adc_channels
-
-    expected_A = (energy_absorber - b0) / a_E  if a_E != 0 else 0
-    expected_C = energy_converter / a_prime_E if a_prime_E != 0 else 0
-
-    sigma_A = k * np.sqrt(max(0, expected_A)) + abs(c)
-    sigma_C = k * np.sqrt(max(0, expected_C)) + abs(c)
-
-    A_simulated = int(np.round(np.random.normal(expected_A, sigma_A)))
-    C_simulated = int(np.round(np.random.normal(expected_C, sigma_C)))
-
-    A_simulated = max(0, min(A_simulated, adc_A_channels))
-    C_simulated = max(0, min(C_simulated, adc_C_channels))
-
-    reconstructed_energy = a_E * A_simulated + a_prime_E * C_simulated + b0
+    reconstructed_energy, A_simulated, C_simulated = some_other_function(measured_energy_preADC, adc_channels)
     
-    if measured_energy_preADC <= 0:
-        return (np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 
-                np.nan, np.nan)  # Replace None with np.nan or appropriate sentinel value
+    a_E = some_calculation_a_E(reconstructed_energy)
+    a_prime_E = some_calculation_a_prime_E(reconstructed_energy)
+    converter_fraction = some_calculation_converter_fraction(reconstructed_energy)
+    energy_absorber = some_calculation_energy_absorber(reconstructed_energy)
+    energy_converter = some_calculation_energy_converter(reconstructed_energy)
+    expected_A = some_calculation_expected_A(A_simulated)
+    expected_C = some_calculation_expected_C(C_simulated)
 
-    return reconstructed_energy, A_simulated, C_simulated, true_energy, a_E, a_prime_E, converter_fraction, energy_absorber, energy_converter, expected_A, expected_C
+    return (reconstructed_energy, A_simulated, C_simulated, true_energy, a_E, a_prime_E, converter_fraction, energy_absorber, energy_converter, expected_A, expected_C)
 
+# Example utility functions used within detector_energy_smearing (replace with actual implementations)
+def some_function_to_calculate_energy(true_energy, a_params, a_prime_params, b0, resolution_params):
+    # Placeholder implementation
+    return true_energy * 0.9
+
+def some_other_function(measured_energy_preADC, adc_channels):
+    # Placeholder implementation
+    return measured_energy_preADC * 0.95, 1.0, 1.0
+
+def some_calculation_a_E(reconstructed_energy):
+    # Placeholder implementation
+    return reconstructed_energy * 0.1
+
+def some_calculation_a_prime_E(reconstructed_energy):
+    # Placeholder implementation
+    return reconstructed_energy * 0.05
+
+def some_calculation_converter_fraction(reconstructed_energy):
+    # Placeholder implementation
+    return reconstructed_energy * 0.8
+
+def some_calculation_energy_absorber(reconstructed_energy):
+    # Placeholder implementation
+    return reconstructed_energy * 0.7
+
+def some_calculation_energy_converter(reconstructed_energy):
+    # Placeholder implementation
+    return reconstructed_energy * 0.6
+
+def some_calculation_expected_A(A_simulated):
+    # Placeholder implementation
+    return A_simulated * 1.1
+
+def some_calculation_expected_C(C_simulated):
+    # Placeholder implementation
+    return C_simulated * 1.2
     # return reconstructed_energy, A_simulated, C_simulated, true_energy, a_E, a_prime_E, converter_fraction, energy_absorber, energy_converter, expected_A, expected_C
     
 
