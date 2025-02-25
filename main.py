@@ -2,13 +2,14 @@ import numpy as np
 from simulation import run_simulation, generate_kinetic_energies
 from plotting import plot_results, estimate_background_from_sidebands, subtract_background, fit_signal, gaussian, lorentzian
 import scipy.stats as stats
+M_pi0 = 134.96
 
 def main():
     """Funzione principale per eseguire la simulazione."""
     num_samples = 100000
     E_gamma_min = 40.0  # Soglia minima di energia per i fotoni (MeV)
     sigma_theta = 0.08163  # Non più utilizzato direttamente
-
+    
     # --- Parametri di Calibrazione (presi dal testo) e per la risoluzione ---
     a_params = (-5.8e-5, 0.154)       # Parametri per a(E)
     a_prime_params = (8.34e-5, 0.055)  # Parametri per a'(E)
