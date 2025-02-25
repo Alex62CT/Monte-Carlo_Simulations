@@ -2,7 +2,7 @@ import numpy as np
 from simulation import run_simulation, generate_kinetic_energies
 from plotting import plot_results, estimate_background_from_sidebands, subtract_background, fit_signal, gaussian, lorentzian
 import scipy.stats as stats
-M_pi0 = 134.96
+M_PI0 = 134.96 #MeV
 
 def main():
     """Funzione principale per eseguire la simulazione."""
