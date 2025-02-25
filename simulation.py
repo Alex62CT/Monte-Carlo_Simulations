@@ -43,8 +43,12 @@ def detector_energy_smearing(true_energy, a_params, a_prime_params, b0, resoluti
     C_simulated = max(0, min(C_simulated, adc_C_channels))
 
     reconstructed_energy = a_E * A_simulated + a_prime_E * C_simulated + b0
+    if measured_energy_preADC <= 0:
+        return (np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 
+                np.nan, np.nan)  # Replace None with np.nan or appropriate sentinel value
 
     return reconstructed_energy, A_simulated, C_simulated, true_energy, a_E, a_prime_E, converter_fraction, energy_absorber, energy_converter, expected_A, expected_C
+    
 
 @jit(nopython=True)
 def simulate_pi0_decay(E_pi0, num_samples):
